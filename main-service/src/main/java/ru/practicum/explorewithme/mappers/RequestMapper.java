@@ -1,7 +1,6 @@
 package ru.practicum.explorewithme.mappers;
 
 import ru.practicum.explorewithme.dto.ParticipationRequestDto;
-import ru.practicum.explorewithme.dto.State;
 import ru.practicum.explorewithme.dto.Status;
 import ru.practicum.explorewithme.models.Event;
 import ru.practicum.explorewithme.models.Request;

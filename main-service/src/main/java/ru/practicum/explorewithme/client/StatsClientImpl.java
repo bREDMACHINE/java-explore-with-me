@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,6 @@ import ru.practicum.explorewithme.dto.StatsOutDto;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Formatter;
 import java.util.List;
 
 @Service
@@ -46,7 +44,7 @@ public class StatsClientImpl {
                 null);
     }
 
-    private <T> ResponseEntity<List<StatsOutDto>> makeAndSendRequest(HttpMethod method, String path, StatsDto statsDto) {
+    private ResponseEntity<List<StatsOutDto>> makeAndSendRequest(HttpMethod method, String path, StatsDto statsDto) {
         HttpEntity<StatsDto> requestEntity = new HttpEntity<>(statsDto, defaultHeaders());
 
         ResponseEntity<List<StatsOutDto>> statsServerResponse;

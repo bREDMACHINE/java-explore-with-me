@@ -6,9 +6,7 @@ import ru.practicum.explorewithme.dto.NewCompilationDto;
 import ru.practicum.explorewithme.models.Compilation;
 import ru.practicum.explorewithme.models.Event;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class CompilationMapper {
 

@@ -6,7 +6,6 @@ import ru.practicum.explorewithme.dto.State;
 import ru.practicum.explorewithme.models.Event;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 
 public interface EventsRepositoryCustom {
