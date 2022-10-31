@@ -15,7 +15,7 @@ services:
     image: postgres:14-alpine
     container_name: stats-db-container
     ports:
-      - "6541:5432"
+      - "6545:5432"
     environment:
       - POSTGRES_DB=explorewithme-stats
       - POSTGRES_USER=username
@@ -31,7 +31,7 @@ services:
       - ewm-db
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/explorewithme-main
-      - EXPLOREWITHME-STATS.URL=http://server:9090
+      - EXPLOREWITHME_STATS_URL=http://stats-server:9090
 
   ewm-db:
     image: postgres:14-alpine
