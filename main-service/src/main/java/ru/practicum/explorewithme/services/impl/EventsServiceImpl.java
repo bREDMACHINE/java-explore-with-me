@@ -68,8 +68,8 @@ public class EventsServiceImpl implements EventsService {
     ) {
         setViews(ip, uri);
         return eventsRepositoryCustom.findAllEventsPublic(text, categories, rangeStart, rangeEnd, sort, onlyAvailable, pageable).stream()
-                .filter(Event -> Event.getPaid().equals(paid))
-                .map(Event -> EventMapper.toEventShortDto(getEventForServices(Event.getId())))
+                .filter(event -> event.getPaid().equals(paid))
+                .map(event -> EventMapper.toEventShortDto(getEventForServices(event.getId())))
                 .collect(Collectors.toList());
     }
 
@@ -85,7 +85,7 @@ public class EventsServiceImpl implements EventsService {
     @Override
     public List<EventShortDto> findAllEventShortDtosForServices(List<Event> events) {
         return events.stream()
-                .map(Event -> EventMapper.toEventShortDto(getEventForServices(Event.getId())))
+                .map(event -> EventMapper.toEventShortDto(getEventForServices(event.getId())))
                 .collect(Collectors.toList());
     }
 
@@ -115,7 +115,7 @@ public class EventsServiceImpl implements EventsService {
     @Override
     public List<EventShortDto> findAllEventsByUser(Long userId, Pageable pageable) {
         return eventsRepository.findAllByInitiatorId(userService.getUserForServices(userId).getId(), pageable).stream()
-                .map(Event -> EventMapper.toEventShortDto(getEventForServices(Event.getId())))
+                .map(event -> EventMapper.toEventShortDto(getEventForServices(event.getId())))
                 .collect(Collectors.toList());
     }
 
@@ -273,7 +273,7 @@ public class EventsServiceImpl implements EventsService {
             }
         }
         return eventsRepositoryCustom.findAllEventsByAdmin(users, states, categories, rangeStart, rangeEnd, pageable).stream()
-                .map(Event -> EventMapper.toEventFullDto(getEventForServices(Event.getId())))
+                .map(event -> EventMapper.toEventFullDto(getEventForServices(event.getId())))
                 .collect(Collectors.toList());
     }
 }

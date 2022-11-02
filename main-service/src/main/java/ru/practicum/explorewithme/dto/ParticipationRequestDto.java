@@ -16,8 +16,8 @@ public class ParticipationRequestDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime created;
-    Long event;
-    Long id;
-    Long requester;
-    Status status;
+    private Long event;
+    private Long id;
+    private Long requester;
+    private Status status;
 }

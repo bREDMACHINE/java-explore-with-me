@@ -21,7 +21,7 @@ public interface EventsService {
                                       String ip,
                                       String uri);
 
-    public List<Event> findAllEventsForServices(Set<Long> ids);
+    List<Event> findAllEventsForServices(Set<Long> ids);
 
     EventFullDto getEventPublic(Long id, String ip, String uri);
 

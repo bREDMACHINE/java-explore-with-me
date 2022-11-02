@@ -12,8 +12,8 @@ import java.util.Set;
 @NoArgsConstructor
 public class NewCompilationDto {
 
-    Set<Long> events;
-    Boolean pinned;
+    private Set<Long> events;
+    private Boolean pinned;
     @NotBlank
-    String title;
+    private String title;
 }

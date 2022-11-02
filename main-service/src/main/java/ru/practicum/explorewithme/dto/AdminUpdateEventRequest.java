@@ -20,7 +20,7 @@ public class AdminUpdateEventRequest {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
-    private AdminUpdateEventRequest.LocationDto location;
+    private LocationDto location;
     private Boolean paid;
     private Long participantLimit;
     private Boolean requestModeration;

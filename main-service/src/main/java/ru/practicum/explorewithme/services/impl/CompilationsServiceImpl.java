@@ -42,8 +42,8 @@ public class CompilationsServiceImpl implements CompilationsService {
     @Override
     public List<CompilationDto> findAllCompilationsPublic(Boolean pinned, Pageable pageable) {
         return compilationsRepository.findAll(pageable).stream()
-                .filter(Compilation -> Compilation.getPinned().equals(true))
-                .map(Compilation -> getCompilationPublic(Compilation.getId()))
+                .filter(compilation -> compilation.getPinned().equals(true))
+                .map(compilation -> getCompilationPublic(compilation.getId()))
                 .collect(Collectors.toList());
     }
 
