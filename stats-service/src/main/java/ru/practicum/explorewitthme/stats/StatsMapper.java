@@ -15,6 +15,9 @@ public class StatsMapper {
 
     public static StatsOutDto toStatsOutDto(List<Stats> stats, String uri) {
         StatsOutDto statsOutDto = new StatsOutDto();
+        String[] uriString = uri.split("/");
+        String idString = uriString[2].substring(0, uriString[2].length() - 1);
+        statsOutDto.setId(Long.parseLong(idString));
         if (stats.size() != 0) {
             statsOutDto.setApp(stats.get(0).getApp());
             statsOutDto.setUri(stats.get(0).getUri());

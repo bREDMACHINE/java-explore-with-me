@@ -24,7 +24,7 @@ public class CategoriesServiceImpl implements CategoriesService {
 
     @Transactional(readOnly = true)
     @Override
-    public CategoryDto getCategory(Long catId) {
+    public CategoryDto getCategoryPublic(Long catId) {
         return CategoryMapper.toCategoryDto(getCategoryForServices(catId));
     }
 
@@ -37,7 +37,7 @@ public class CategoriesServiceImpl implements CategoriesService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<CategoryDto> findAllCategories(Pageable pageable) {
+    public List<CategoryDto> findAllCategoriesPublic(Pageable pageable) {
         return categoriesRepository.findAll(pageable).stream()
                 .map(CategoryMapper::toCategoryDto)
                 .collect(Collectors.toList());

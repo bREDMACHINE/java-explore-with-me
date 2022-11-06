@@ -8,11 +8,11 @@ import ru.practicum.explorewithme.models.Category;
 import java.util.List;
 
 public interface CategoriesService {
-    CategoryDto getCategory(Long catId);
+    CategoryDto getCategoryPublic(Long catId);
 
     Category getCategoryForServices(Long catId);
 
-    List<CategoryDto> findAllCategories(Pageable pageable);
+    List<CategoryDto> findAllCategoriesPublic(Pageable pageable);
 
     CategoryDto updateCategoryByAdmin(CategoryDto categoryDto);
 

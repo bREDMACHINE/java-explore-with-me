@@ -2,7 +2,7 @@ package ru.practicum.explorewithme.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,9 +11,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-@Getter
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class NewEventDto {
 
     @NotBlank
@@ -37,7 +37,8 @@ public class NewEventDto {
     @NotBlank
     private String title;
 
-    @Getter
+    @Data
+    @NoArgsConstructor
     @AllArgsConstructor
     public static class LocationDto {
 

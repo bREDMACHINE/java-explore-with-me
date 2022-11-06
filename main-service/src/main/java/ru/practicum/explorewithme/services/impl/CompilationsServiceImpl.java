@@ -43,7 +43,8 @@ public class CompilationsServiceImpl implements CompilationsService {
     public List<CompilationDto> findAllCompilationsPublic(Boolean pinned, Pageable pageable) {
         return compilationsRepository.findAll(pageable).stream()
                 .filter(compilation -> compilation.getPinned().equals(true))
-                .map(compilation -> getCompilationPublic(compilation.getId()))
+                .map(compilation -> CompilationMapper.toCompilationDto(compilation,
+                                eventsService.findAllEventShortDtosForServices(compilation.getEvents())))
                 .collect(Collectors.toList());
     }
 

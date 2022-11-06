@@ -54,6 +54,8 @@ public class EventMapper {
         event.setInitiator(user);
         event.setCreatedOn(LocalDateTime.now());
         event.setState(State.PENDING);
+        event.setConfirmedRequests(0L);
+        event.setViews(0);
         return event;
     }
 

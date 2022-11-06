@@ -20,12 +20,12 @@ public class StatsRepositoryImpl implements StatsRepositoryCustom {
         this.entityManager = entityManager;
     }
 
-    public List<Stats> getStats(LocalDateTime start, LocalDateTime end, String uri, Boolean unique) {
+    public List<Stats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Stats> cr = cb.createQuery(Stats.class);
         Root<Stats> root = cr.from(Stats.class);
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(root.get("uri").in(uri));
+        predicates.add(root.get("uri").in(uris));
         predicates.add(cb.between(root.get("dateTimeRequest"), start, end));
         cr.select(root).where(predicates.toArray(new Predicate[predicates.size()]));
         return entityManager.createQuery(cr).getResultList();

@@ -30,13 +30,15 @@ public class StatsController {
                                 LocalDateTime end,
                                 @RequestParam List<String> uris,
                                 @RequestParam(defaultValue = "false") Boolean unique) {
-        log.info("Get stats with parameters:  start={}, end={}, uris={}, unique={}", start, end, uris, unique);
-        return statsService.getStats(start, end, uris, unique);
+        log.info("Get /stats with parameters: start={}, end={}, uris={}, unique={}", start, end, uris, unique);
+        List<StatsOutDto> statsOutDtos = statsService.getStats(start, end, uris, unique);
+        log.info("Return stats={}", statsOutDtos);
+        return statsOutDtos;
     }
 
     @PostMapping ("/hit")
     public void setViews(@RequestBody StatsDto statsDto) {
-        log.info("Set stats={}", statsDto);
+        log.info("Post /hit with body stats={}", statsDto);
         statsService.setViews(statsDto);
     }
 }

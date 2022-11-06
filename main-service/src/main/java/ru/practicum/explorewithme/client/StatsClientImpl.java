@@ -1,5 +1,6 @@
 package ru.practicum.explorewithme.client;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -18,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class StatsClientImpl {
     private final RestTemplate rest;
@@ -39,9 +41,16 @@ public class StatsClientImpl {
                                                 LocalDateTime end,
                                                 Boolean unique) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return makeAndSendRequest(HttpMethod.GET,
+        log.info("Request to stats-server with parameters: /stats?start={}&end={}&uris={}&unique={}",
+                start.format(formatter),
+                end.format(formatter),
+                uris,
+                unique);
+        ResponseEntity<List<StatsOutDto>> listResponseEntity = makeAndSendRequest(HttpMethod.GET,
                 "/stats?start=" + start.format(formatter) + "&end=" + end.format(formatter) + "&uris=" + uris + "&unique=" + unique,
                 null);
+        log.info("Return listResponseEntity={}", listResponseEntity);
+        return listResponseEntity;
     }
 
     private ResponseEntity<List<StatsOutDto>> makeAndSendRequest(HttpMethod method, String path, StatsDto statsDto) {

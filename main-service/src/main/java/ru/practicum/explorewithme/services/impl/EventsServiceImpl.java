@@ -25,6 +25,7 @@ import ru.practicum.explorewithme.services.UserService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -48,8 +49,28 @@ public class EventsServiceImpl implements EventsService {
         statsClient.setViews(statsDto);
     }
 
-    private List<StatsOutDto> getStats(List<String> uris, LocalDateTime start, LocalDateTime end, Boolean unique) {
-        return statsClient.getStats(uris, start, end, unique).getBody();
+    private List<Event> getStats(List<Event> events, Boolean unique) {
+        if (events.size() != 0) {
+            List<String> uris = new ArrayList<>();
+            LocalDateTime start = LocalDateTime.now();
+            for (Event event : events) {
+                uris.add("/events/" + event.getId());
+                if (event.getCreatedOn().minusDays(1).isBefore(start)) {
+                    start = event.getCreatedOn().minusDays(1);
+                }
+            }
+            List<StatsOutDto> statsDtos = statsClient.getStats(uris, start, LocalDateTime.now(), unique).getBody();
+            if (statsDtos != null) {
+                for (Event event : events) {
+                    for (StatsOutDto stats : statsDtos) {
+                        if (Objects.equals(event.getId(), stats.getId())) {
+                            event.setViews(stats.getHits());
+                        }
+                    }
+                }
+            }
+        }
+        return events;
     }
 
     @Transactional(readOnly = true)
@@ -67,25 +88,26 @@ public class EventsServiceImpl implements EventsService {
             String uri
     ) {
         setViews(ip, uri);
-        return eventsRepositoryCustom.findAllEventsPublic(text, categories, rangeStart, rangeEnd, sort, onlyAvailable, pageable).stream()
+        return getStats(
+                eventsRepositoryCustom.findAllEventsPublic(text, categories, rangeStart, rangeEnd, sort, onlyAvailable, pageable),
+                false
+        ).stream()
                 .filter(event -> event.getPaid().equals(paid))
-                .map(event -> EventMapper.toEventShortDto(getEventForServices(event.getId())))
+                .map(EventMapper::toEventShortDto)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<Event> findAllEventsForServices(Set<Long> ids) {
-        return ids.stream()
-                .map(this::getEventForServices)
-                .collect(Collectors.toList());
+        return getStats(eventsRepository.findEventsByIdIn(ids), false);
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<EventShortDto> findAllEventShortDtosForServices(List<Event> events) {
-        return events.stream()
-                .map(event -> EventMapper.toEventShortDto(getEventForServices(event.getId())))
+        return getStats(events, false).stream()
+                .map(EventMapper::toEventShortDto)
                 .collect(Collectors.toList());
     }
 
@@ -100,22 +122,22 @@ public class EventsServiceImpl implements EventsService {
         throw new NotFoundException("Event with id=" + id + " was not found.");
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public Event getEventForServices(Long id) {
         Event event = eventsRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Event with id=" + id + " was not found."));
-        List<String> uris = new ArrayList<>();
-        uris.add("/events/" + id);
-        event.setViews(getStats(uris, event.getCreatedOn(), event.getEventDate(), false).get(0).getHits());
-        return event;
+        return getStats(List.of(event), true).get(0);
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<EventShortDto> findAllEventsByUser(Long userId, Pageable pageable) {
-        return eventsRepository.findAllByInitiatorId(userService.getUserForServices(userId).getId(), pageable).stream()
-                .map(event -> EventMapper.toEventShortDto(getEventForServices(event.getId())))
+        return getStats(
+                eventsRepository.findAllByInitiatorId(userService.getUserForServices(userId).getId(), pageable),
+                false
+        ).stream()
+                .map(EventMapper::toEventShortDto)
                 .collect(Collectors.toList());
     }
 
@@ -165,8 +187,7 @@ public class EventsServiceImpl implements EventsService {
         Category category = categoriesService.getCategoryForServices(newEventDto.getCategory());
         Location location = LocationMapper.toLocation(newEventDto.getLocation());
         Event event = EventMapper.toEvent(newEventDto, category, locationsRepository.save(location), user);
-        eventsRepository.save(event);
-        return EventMapper.toEventFullDto(getEventForServices(event.getId()));
+        return EventMapper.toEventFullDto(getStats(List.of(eventsRepository.save(event)), false).get(0));
     }
 
     @Transactional
@@ -176,8 +197,7 @@ public class EventsServiceImpl implements EventsService {
         Event event = getEventForServices(eventId);
         if (event.getState().equals(State.PENDING)) {
             event.setState(State.CANCELED);
-            eventsRepository.save(event);
-            return EventMapper.toEventFullDto(getEventForServices(event.getId()));
+            return EventMapper.toEventFullDto(eventsRepository.save(event));
         }
         throw new BadRequestException("The change is not available");
     }
@@ -188,7 +208,7 @@ public class EventsServiceImpl implements EventsService {
         User user = userService.getUserForServices(userId);
         Event event = getEventForServices(eventId);
         if (event.getInitiator().getId().equals(user.getId())) {
-            return EventMapper.toEventFullDto(getEventForServices(event.getId()));
+            return EventMapper.toEventFullDto(event);
         }
         throw new NotFoundException("Event with id=" + eventId + " was not found.");
     }
@@ -199,8 +219,7 @@ public class EventsServiceImpl implements EventsService {
         Event event = getEventForServices(eventId);
         if (event.getState().equals(State.PENDING)) {
             event.setState(State.CANCELED);
-            eventsRepository.save(event);
-            return EventMapper.toEventFullDto(getEventForServices(event.getId()));
+            return EventMapper.toEventFullDto(eventsRepository.save(event));
         }
         throw new BadRequestException("The change is not available");
     }
@@ -213,8 +232,7 @@ public class EventsServiceImpl implements EventsService {
         if (event.getState().equals(State.PENDING) && publishedOn.plusHours(1).isBefore(event.getEventDate())) {
             event.setState(State.PUBLISHED);
             event.setPublishedOn(publishedOn);
-            eventsRepository.save(event);
-            return EventMapper.toEventFullDto(getEventForServices(event.getId()));
+            return EventMapper.toEventFullDto(eventsRepository.save(event));
         }
         throw new BadRequestException("The change is not available");
     }
@@ -254,8 +272,7 @@ public class EventsServiceImpl implements EventsService {
         if (adminUpdateEventRequest.getTitle() != null) {
             event.setTitle(adminUpdateEventRequest.getTitle());
         }
-        eventsRepository.save(event);
-        return EventMapper.toEventFullDto(getEventForServices(event.getId()));
+        return EventMapper.toEventFullDto(eventsRepository.save(event));
     }
 
     @Transactional(readOnly = true)
@@ -272,8 +289,11 @@ public class EventsServiceImpl implements EventsService {
                 states.add(State.from(state).get());
             }
         }
-        return eventsRepositoryCustom.findAllEventsByAdmin(users, states, categories, rangeStart, rangeEnd, pageable).stream()
-                .map(event -> EventMapper.toEventFullDto(getEventForServices(event.getId())))
+        return getStats(
+                eventsRepositoryCustom.findAllEventsByAdmin(users, states, categories, rangeStart, rangeEnd, pageable),
+                false
+        ).stream()
+                .map(EventMapper::toEventFullDto)
                 .collect(Collectors.toList());
     }
 }

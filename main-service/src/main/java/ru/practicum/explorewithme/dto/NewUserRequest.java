@@ -1,13 +1,13 @@
 package ru.practicum.explorewithme.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class NewUserRequest {

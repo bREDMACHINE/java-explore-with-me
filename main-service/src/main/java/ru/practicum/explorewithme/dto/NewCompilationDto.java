@@ -1,15 +1,15 @@
 package ru.practicum.explorewithme.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Set;
 
-@Getter
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class NewCompilationDto {
 
     private Set<Long> events;
