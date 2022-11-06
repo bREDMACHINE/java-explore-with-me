@@ -63,7 +63,9 @@ public class EventsServiceImpl implements EventsService {
             if (statsDtos != null) {
                 for (Event event : events) {
                     for (StatsOutDto stats : statsDtos) {
-                        if (Objects.equals(event.getId(), stats.getId())) {
+                        String[] uriString = stats.getUri().split("/");
+                        String idString = uriString[2].substring(0, uriString[2].length() - 1);
+                        if (Objects.equals(event.getId(), Long.parseLong(idString))) {
                             event.setViews(stats.getHits());
                         }
                     }

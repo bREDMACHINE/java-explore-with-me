@@ -22,7 +22,6 @@ public class StatsServiceImpl implements StatsService {
     public List<StatsOutDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         List<Stats> stats = statsRepositoryCustom.getStats(start, end, uris, unique);
         List<StatsOutDto> statsOutDtos = new ArrayList<>();
-        System.out.println(stats);
         for (String uri : uris) {
             List<Stats> list = new ArrayList<>();
             for (Stats stat : stats) {

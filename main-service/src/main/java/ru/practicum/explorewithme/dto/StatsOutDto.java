@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StatsOutDto {
 
-    private Long id;
     private String app;
     private String uri;
     private Integer hits;

@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.client.HttpServerErrorException;
 
 @ControllerAdvice("ru.practicum.explorewithme.stats")
 public class ErrorHandler {
@@ -19,7 +18,7 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ApiError> handleInternalServerError(final HttpServerErrorException.InternalServerError e) {
+    public ResponseEntity<ApiError> handleInternalServerError(final Exception e) {
         return new ResponseEntity<>(new ApiError(
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 "Error occurred",
