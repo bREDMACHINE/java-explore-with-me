@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
@@ -28,11 +27,8 @@ public class NewEventDto {
     private LocalDateTime eventDate;
     @NotNull
     private NewEventDto.LocationDto location;
-    @Value("${NewEventDto.paid:false}")
     private Boolean paid;
-    @Value("${NewEventDto.participantLimit:10}")
     private Long participantLimit;
-    @Value("${NewEventDto.requestModeration:true}")
     private Boolean requestModeration;
     @NotBlank
     private String title;

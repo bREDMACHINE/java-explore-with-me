@@ -23,10 +23,7 @@ import ru.practicum.explorewithme.services.EventsService;
 import ru.practicum.explorewithme.services.UserService;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -90,11 +87,21 @@ public class EventsServiceImpl implements EventsService {
             String uri
     ) {
         setViews(ip, uri);
+        if (sort.equals(Sort.VIEWS)) {
+            return getStats(
+                    eventsRepositoryCustom.findAllEventsPublic(text, categories, rangeStart, rangeEnd, sort, onlyAvailable, pageable),
+                    false
+            ).stream()
+                    .filter(event -> paid != null ? event.getPaid().equals(paid) : true)
+                    .map(EventMapper::toEventShortDto)
+                    .sorted(Comparator.comparing(EventShortDto::getViews))
+                    .collect(Collectors.toList());
+        }
         return getStats(
                 eventsRepositoryCustom.findAllEventsPublic(text, categories, rangeStart, rangeEnd, sort, onlyAvailable, pageable),
                 false
         ).stream()
-                .filter(event -> event.getPaid().equals(paid))
+                .filter(event -> paid != null ? event.getPaid().equals(paid) : true)
                 .map(EventMapper::toEventShortDto)
                 .collect(Collectors.toList());
     }
@@ -111,6 +118,12 @@ public class EventsServiceImpl implements EventsService {
         return getStats(events, false).stream()
                 .map(EventMapper::toEventShortDto)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Event> findAllEventsWithStatsForServices(Set<Event> events) {
+        return getStats(new ArrayList<>(events), false);
     }
 
     @Transactional(readOnly = true)

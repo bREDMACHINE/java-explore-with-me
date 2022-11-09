@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface StatsRepositoryCustom {
 
-    List<Stats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique);
+    List<Stats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris);
 }

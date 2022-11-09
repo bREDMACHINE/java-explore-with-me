@@ -40,17 +40,17 @@ public class EventsController {
 
     @GetMapping("/events")
     public List<EventShortDto> findAllEventsPublic(
-            @RequestParam String text,
-            @RequestParam List<Integer> categories,
-            @RequestParam Boolean paid,
+            @RequestParam(required = false) String text,
+            @RequestParam(required = false) List<Integer> categories,
+            @RequestParam(required = false) Boolean paid,
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
             @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-            @RequestParam LocalDateTime rangeStart,
+            @RequestParam(required = false) LocalDateTime rangeStart,
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
             @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-            @RequestParam LocalDateTime rangeEnd,
-            @RequestParam(defaultValue = "false") Boolean onlyAvailable,
-            @RequestParam String sort,
+            @RequestParam(required = false) LocalDateTime rangeEnd,
+            @RequestParam(defaultValue = "false", required = false) Boolean onlyAvailable,
+            @RequestParam(defaultValue = "VIEWS", required = false) String sort,
             @PositiveOrZero @RequestParam(defaultValue = "0", required = false) Integer from,
             @Positive @RequestParam(defaultValue = "10", required = false) Integer size,
             HttpServletRequest request
@@ -140,15 +140,15 @@ public class EventsController {
 
     @GetMapping("/admin/events")
     public List<EventFullDto> findAllEventsByAdmin(
-            @RequestParam List<Integer> users,
-            @RequestParam List<String> states,
-            @RequestParam List<Integer> categories,
+            @RequestParam(required = false) List<Integer> users,
+            @RequestParam(required = false) List<String> states,
+            @RequestParam(required = false) List<Integer> categories,
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
             @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-            @RequestParam LocalDateTime rangeStart,
+            @RequestParam(required = false) LocalDateTime rangeStart,
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
             @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-            @RequestParam LocalDateTime rangeEnd,
+            @RequestParam(required = false) LocalDateTime rangeEnd,
             @PositiveOrZero @RequestParam(defaultValue = "0", required = false) Integer from,
             @Positive @RequestParam(defaultValue = "10", required = false) Integer size
     ) {

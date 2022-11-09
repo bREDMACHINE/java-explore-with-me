@@ -1,5 +1,7 @@
 package ru.practicum.explorewitthme.stats;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
@@ -12,15 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class StatsRepositoryImpl implements StatsRepositoryCustom {
 
     private final EntityManager entityManager;
 
-    public StatsRepositoryImpl(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
-
-    public List<Stats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+    public List<Stats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Stats> cr = cb.createQuery(Stats.class);
         Root<Stats> root = cr.from(Stats.class);

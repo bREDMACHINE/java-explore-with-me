@@ -20,7 +20,7 @@ public class StatsServiceImpl implements StatsService {
 
     @Transactional(readOnly = true)
     public List<StatsOutDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        List<Stats> stats = statsRepositoryCustom.getStats(start, end, uris, unique);
+        List<Stats> stats = statsRepositoryCustom.getStats(start, end, uris);
         List<StatsOutDto> statsOutDtos = new ArrayList<>();
         for (String uri : uris) {
             List<Stats> list = new ArrayList<>();
@@ -29,7 +29,7 @@ public class StatsServiceImpl implements StatsService {
                     list.add(stat);
                 }
             }
-            statsOutDtos.add(StatsMapper.toStatsOutDto(list, uri));
+            statsOutDtos.add(StatsMapper.toStatsOutDto(list, uri, unique));
         }
         log.info("Return stats={}", statsOutDtos);
         return statsOutDtos;

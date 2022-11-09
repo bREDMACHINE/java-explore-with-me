@@ -1,6 +1,5 @@
 package ru.practicum.explorewithme.services;
 
-import org.springframework.data.domain.Pageable;
 import ru.practicum.explorewithme.dto.CommentDto;
 import ru.practicum.explorewithme.dto.NewCommentDto;
 
@@ -16,5 +15,5 @@ public interface CommentsService {
 
     void deleteCommentByAdmin(Long commentId);
 
-    List<CommentDto> findAllCommentsByEventPublic(Long eventId, Pageable pageable);
+    List<CommentDto> findAllCommentsByEventPublic(Long eventId, Integer from, Integer size);
 }

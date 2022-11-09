@@ -3,7 +3,6 @@ package ru.practicum.explorewithme.controllers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.dto.CommentDto;
@@ -30,7 +29,7 @@ public class CommentsController {
             @Positive @RequestParam(defaultValue = "10", required = false) Integer size
     ) {
         log.info("Get /event/{}/comments with parameters from={}, size={}", eventId, from, size);
-        List<CommentDto> commentDtos = commentService.findAllCommentsByEventPublic(eventId, PageRequest.of(from / size, size));
+        List<CommentDto> commentDtos = commentService.findAllCommentsByEventPublic(eventId, from, size);
         log.info("Return comments={}", commentDtos);
         return commentDtos;
     }

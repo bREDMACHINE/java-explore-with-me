@@ -7,10 +7,18 @@ import ru.practicum.explorewithme.models.Compilation;
 import ru.practicum.explorewithme.models.Event;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CompilationMapper {
 
     public static CompilationDto toCompilationDto(Compilation compilation, List<EventShortDto> events) {
+        return new CompilationDto(events, compilation.getId(), compilation.getPinned(), compilation.getTitle());
+    }
+
+    public static CompilationDto toCompilationDto(Compilation compilation) {
+        List<EventShortDto> events = compilation.getEvents().stream()
+                .map(EventMapper::toEventShortDto)
+                .collect(Collectors.toList());
         return new CompilationDto(events, compilation.getId(), compilation.getPinned(), compilation.getTitle());
     }
 

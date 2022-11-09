@@ -1,5 +1,7 @@
 package ru.practicum.explorewithme.repositories.impl;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import ru.practicum.explorewithme.dto.Sort;
@@ -18,13 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EventsRepositoryImpl implements EventsRepositoryCustom {
 
     private final EntityManager entityManager;
-
-    public EventsRepositoryImpl(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
 
     public List<Event> findAllEventsByAdmin(List<Integer> users,
                                      List<State> states,
@@ -88,13 +87,8 @@ public class EventsRepositoryImpl implements EventsRepositoryCustom {
             predicates.add(cb.lessThan(root.get("confirmedRequests"), root.get("participantLimit")));
         }
         cr.select(root).where(predicates.toArray(new Predicate[predicates.size()]));
-        if (sort != null) {
-            if (sort.equals(Sort.EVENT_DATE)) {
-                cr.orderBy(cb.asc(root.get("eventDate")));
-            }
-            if (sort.equals(Sort.VIEWS)) {
-                cr.orderBy(cb.asc(root.get("views")));
-            }
+        if (sort.equals(Sort.EVENT_DATE)) {
+            cr.orderBy(cb.asc(root.get("eventDate")));
         }
         TypedQuery<Event> q = entityManager.createQuery(cr);
         q.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
