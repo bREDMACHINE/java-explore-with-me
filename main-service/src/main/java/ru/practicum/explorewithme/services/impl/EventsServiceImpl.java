@@ -61,7 +61,7 @@ public class EventsServiceImpl implements EventsService {
                 for (Event event : events) {
                     for (StatsOutDto stats : statsDtos) {
                         String[] uriString = stats.getUri().split("/");
-                        String idString = uriString[2].substring(0, uriString[2].length() - 1);
+                        String idString = uriString[2];
                         if (Objects.equals(event.getId(), Long.parseLong(idString))) {
                             event.setViews(stats.getHits());
                         }
@@ -299,9 +299,11 @@ public class EventsServiceImpl implements EventsService {
                                                    LocalDateTime rangeEnd,
                                                    Pageable pageable) {
         List<State> states = new ArrayList<>();
-        for (String state : statesString) {
-            if (State.from(state).isPresent()) {
-                states.add(State.from(state).get());
+        if (statesString != null) {
+            for (String state : statesString) {
+                if (State.from(state).isPresent()) {
+                    states.add(State.from(state).get());
+                }
             }
         }
         return getStats(

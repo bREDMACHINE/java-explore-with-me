@@ -59,7 +59,7 @@ public class RequestsController {
 
     @PostMapping("/{userId}/requests")
     public ParticipationRequestDto createRequestByRequester(@Positive @PathVariable Long userId,
-                                                            @Positive @RequestParam Long eventId) {
+                                                            @RequestParam(name = "eventId") Long eventId) {
         log.info("Post /users/{}/requests with parameter eventId={}", userId, eventId);
         ParticipationRequestDto requestDto = requestsService.createRequestByRequester(userId, eventId);
         log.info("Return request={}", requestDto);

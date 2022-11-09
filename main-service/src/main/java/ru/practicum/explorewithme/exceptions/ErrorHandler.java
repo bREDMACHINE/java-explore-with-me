@@ -2,6 +2,8 @@ package ru.practicum.explorewithme.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -12,6 +14,26 @@ public class ErrorHandler {
 
     @ExceptionHandler
     public ResponseEntity<ApiError> handleBadRequestException(final BadRequestException e) {
+        return new ResponseEntity<>(new ApiError(
+                e.getStackTrace(),
+                HttpStatus.BAD_REQUEST,
+                "For the requested operation the conditions are not met.",
+                e.getMessage()
+        ), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ApiError> handleBadRequestWithoutParameters(final MissingServletRequestParameterException e) {
+        return new ResponseEntity<>(new ApiError(
+                e.getStackTrace(),
+                HttpStatus.BAD_REQUEST,
+                "For the requested operation the conditions are not met.",
+                e.getMessage()
+        ), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ApiError> handleBadRequestWithoutBody(final MethodArgumentNotValidException e) {
         return new ResponseEntity<>(new ApiError(
                 e.getStackTrace(),
                 HttpStatus.BAD_REQUEST,

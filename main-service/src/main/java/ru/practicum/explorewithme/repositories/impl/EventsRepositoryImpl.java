@@ -38,13 +38,13 @@ public class EventsRepositoryImpl implements EventsRepositoryCustom {
         if (rangeStart != null && rangeEnd != null) {
             predicates.add(cb.between(root.get("eventDate"), rangeStart, rangeEnd));
         }
-        if (states != null) {
+        if (states.size() != 0) {
             predicates.add(root.get("state").in(states));
         }
-        if (categories != null) {
+        if (categories.size() != 0) {
             predicates.add(root.get("category").in(categories));
         }
-        if (users != null) {
+        if (users.size() != 0) {
             predicates.add(root.get("initiator").in(users));
         }
         cr.select(root).where(predicates.toArray(new Predicate[predicates.size()]));
