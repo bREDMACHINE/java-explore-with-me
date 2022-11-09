@@ -40,25 +40,20 @@ public class CommentsServiceImpl implements CommentsService {
 
     @Override
     public CommentDto changeCommentByUser(Long userId, Long commentId, NewCommentDto newCommentDto) {
-        Comment comment = getComment(commentId);
-        if (comment.getCommentator().getId().equals(userId)) {
-            comment.setText(newCommentDto.getText());
-            return CommentMapper.toCommentDto(commentsRepository.save(comment));
-        }
-        throw new BadRequestException("The change is not available");
+        Comment comment = getCommentByIdAndCommentatorId(commentId, userId);
+        comment.setText(newCommentDto.getText());
+        return CommentMapper.toCommentDto(commentsRepository.save(comment));
     }
 
     @Override
     public void deleteCommentByUser(Long userId, Long commentId) {
-        Comment comment = getComment(commentId);
-        if (comment.getCommentator().getId().equals(userId)) {
-            commentsRepository.delete(comment);
-        }
+        commentsRepository.delete(getCommentByIdAndCommentatorId(commentId, userId));
     }
 
     @Override
     public void deleteCommentByAdmin(Long commentId) {
-        commentsRepository.delete(getComment(commentId));
+        commentsRepository.delete(commentsRepository.findById(commentId)
+                .orElseThrow(() -> new NotFoundException("Comment with id=" + commentId + " was not found.")));
     }
 
     @Override
@@ -68,8 +63,8 @@ public class CommentsServiceImpl implements CommentsService {
                 .collect(Collectors.toList());
     }
 
-    private Comment getComment(Long id) {
-        return commentsRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Comment with id=" + id + " was not found."));
+    private Comment getCommentByIdAndCommentatorId(Long commentId, Long userId) {
+        return commentsRepository.findByIdAndCommentatorId(commentId, userId)
+                .orElseThrow(() -> new BadRequestException("The change is not available"));
     }
 }
