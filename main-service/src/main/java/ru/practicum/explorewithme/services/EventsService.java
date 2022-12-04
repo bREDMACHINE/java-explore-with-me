@@ -51,4 +51,6 @@ public interface EventsService {
                                             Pageable pageable);
 
     List<EventShortDto> findAllEventShortDtosForServices(List<Event> events);
+
+    List<Event> findAllEventsWithStatsForServices(Set<Event> events);
 }

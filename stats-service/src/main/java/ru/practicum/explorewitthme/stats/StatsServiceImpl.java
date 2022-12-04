@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -20,16 +21,25 @@ public class StatsServiceImpl implements StatsService {
 
     @Transactional(readOnly = true)
     public List<StatsOutDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        List<Stats> stats = statsRepositoryCustom.getStats(start, end, uris, unique);
+        String[] urisArray = uris.toArray(new String[uris.size()]);
+        if (urisArray.length == 1) {
+            urisArray[0] = urisArray[0].substring(1, urisArray[0].length() - 1);
+        }
+        if (urisArray.length > 1) {
+            urisArray[0] = urisArray[0].substring(1);
+            urisArray[urisArray.length - 1] = urisArray[urisArray.length - 1].substring(0, urisArray[urisArray.length - 1].length() - 1);
+        }
+        List<String> urisList = Arrays.asList(urisArray);
+        List<Stats> stats = statsRepositoryCustom.getStats(start, end, urisList);
         List<StatsOutDto> statsOutDtos = new ArrayList<>();
-        for (String uri : uris) {
+        for (String uri : urisList) {
             List<Stats> list = new ArrayList<>();
             for (Stats stat : stats) {
                 if (stat.getUri().equals(uri)) {
                     list.add(stat);
                 }
             }
-            statsOutDtos.add(StatsMapper.toStatsOutDto(list, uri));
+            statsOutDtos.add(StatsMapper.toStatsOutDto(list, uri, unique));
         }
         log.info("Return stats={}", statsOutDtos);
         return statsOutDtos;

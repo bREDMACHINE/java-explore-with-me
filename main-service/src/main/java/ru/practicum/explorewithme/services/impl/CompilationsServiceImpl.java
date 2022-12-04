@@ -15,7 +15,9 @@ import ru.practicum.explorewithme.repositories.CompilationsRepository;
 import ru.practicum.explorewithme.services.CompilationsService;
 import ru.practicum.explorewithme.services.EventsService;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,10 +43,27 @@ public class CompilationsServiceImpl implements CompilationsService {
     @Transactional(readOnly = true)
     @Override
     public List<CompilationDto> findAllCompilationsPublic(Boolean pinned, Pageable pageable) {
-        return compilationsRepository.findAll(pageable).stream()
+        List<Compilation> compilations = compilationsRepository.findAll(pageable).stream()
                 .filter(compilation -> compilation.getPinned().equals(true))
-                .map(compilation -> CompilationMapper.toCompilationDto(compilation,
-                                eventsService.findAllEventShortDtosForServices(compilation.getEvents())))
+                .collect(Collectors.toList());
+        Set<Event> events =  new HashSet<>();
+        for (Compilation compilation : compilations) {
+            events.addAll(compilation.getEvents());
+        }
+        List<Event> eventsWithViews = eventsService.findAllEventsWithStatsForServices(events);
+        for (Compilation compilation : compilations) {
+            for (Event event : compilation.getEvents()) {
+                for (Event eventWithViews : eventsWithViews) {
+                    if (event.getId().equals(eventWithViews.getId())) {
+                        event.setViews(eventWithViews.getViews());
+                    }
+                }
+
+            }
+        }
+
+        return compilations.stream()
+                .map(CompilationMapper::toCompilationDto)
                 .collect(Collectors.toList());
     }
 

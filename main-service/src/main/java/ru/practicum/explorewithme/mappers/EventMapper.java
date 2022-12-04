@@ -48,9 +48,9 @@ public class EventMapper {
         event.setEventDate(newEventDto.getEventDate());
         event.setLocation(location);
         event.setTitle(newEventDto.getTitle());
-        event.setPaid(newEventDto.getPaid());
-        event.setParticipantLimit(newEventDto.getParticipantLimit());
-        event.setRequestModeration(newEventDto.getRequestModeration());
+        event.setPaid(newEventDto.getPaid() != null ? newEventDto.getPaid() : false);
+        event.setParticipantLimit(newEventDto.getParticipantLimit() != null ? newEventDto.getParticipantLimit() : 10);
+        event.setRequestModeration(newEventDto.getRequestModeration() != null ? newEventDto.getRequestModeration() : true);
         event.setInitiator(user);
         event.setCreatedOn(LocalDateTime.now());
         event.setState(State.PENDING);
